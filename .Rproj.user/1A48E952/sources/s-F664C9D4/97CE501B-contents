@@ -1,6 +1,7 @@
 library(tidyverse)
 library(tidytext)
 library(text2vec)
+library(plotly)
 
 ### Create Glove embeddings
 
@@ -39,7 +40,7 @@ vocab_t2v <- create_vocabulary(it)
 
 vectorizer <- vocab_vectorizer(vocab_t2v)
 
-tcm <- create_tcm(it, vectorizer, skip_grams_window = 5)
+tcm <- create_tcm(it, vectorizer, skip_grams_window = 7)
 
 ## Fit Glove
 
@@ -57,34 +58,72 @@ word_vectors <- wv_main + t(wv_context)
 
 ### Sanity check
 
-# most similar words to gaussian
+## this function will grab the 10 most similar words
+most_similar <- function(word, how_many = 10) {
+  
+  tryCatch({
+    sim_df <- 
+      sim2(x = word_vectors[word_vectors %>% attr('dimnames') %>% .[[1]] != word, , drop = FALSE],
+           y = word_vectors[word, , drop = FALSE],
+           method = "cosine", norm = "l2") %>% 
+      as.data.frame() %>% 
+      rownames_to_column('word') 
+    
+    names(sim_df)[2] <- 'similarity'
+    
+    sim_df %>% 
+      arrange(desc(similarity)) %>% 
+      top_n(how_many)
+    
+  },
+  error = function(e) {
+    
+    message('Word not found in dictionary!')
+    return()
+    
+  })
+  
+}
 
-sim_to_gaussian <-
-  sim2(x = word_vectors,
-       y = word_vectors['gaussian', , drop = FALSE],
-       method = "cosine", norm = "l2") %>% 
-  as.data.frame() %>% 
-  rownames_to_column('word') %>%
-  rename(similarity = gaussian) %>% 
-  arrange(desc(similarity))
 
-sim_to_gaussian %>% head()
+most_similar('gauss')
+most_similar('gaussian')
+most_similar('bayesian')
+most_similar('bayes')
+most_similar('poisson')
 
-# analogy check -- gaussian to mixture vs markox to chain?
 
-gaussian_to_mixture <-
-  t(word_vectors['gaussian', ]) - t(word_vectors['mixture', ])
-
-markov_to_chain <- 
-  t(word_vectors['markov', ]) - t(word_vectors['chain', ])
-
-sim2(x = gaussian_to_mixture, y = markov_to_chain,
-     method = "cosine", norm = 'l2')
-
-## not terrible
 
 ## T-sne explore
 
 tsne_out <- Rtsne::Rtsne(word_vectors, initial_dims = 50, perplexity = 35,
                          verbose = TRUE)
 
+
+tsne_df <- tibble(
+  word = vocab
+) %>% 
+  bind_cols(tsne_out$Y %>% as.data.frame())
+
+tsne_df %>% 
+  ggplot(aes(V1, V2, label = word)) +
+  geom_text(alpha = 0.6, size = 0.3)
+
+p <- 
+  tsne_df %>% 
+  ggplot(aes(V1, V2, label = word)) +
+  geom_point(alpha = 0.6, size = 1)
+
+ggplotly(p, tooltip = 'label')
+
+### I'm reasonably satisfied with these embeddings.
+
+final_embedding <- 
+  word_vectors %>% 
+  as.data.frame() %>% 
+  rownames_to_column('word')
+
+names(final_embedding)[2:51] <- paste0('glove_dim_', 1:50)
+
+write_rds(final_embedding, 'data/word-embeddings/custom-glove-embeddings.rds')
+write_csv(final_embedding, 'data/word-embeddings/custom-glove-embeddings.rds')
