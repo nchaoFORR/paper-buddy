@@ -1,0 +1,9 @@
+{
+    "path" : "~/Documents/arxiv-finder/data/word-embeddings",
+    "sortOrder" : [
+        {
+            "ascending" : true,
+            "columnIndex" : 2
+        }
+    ]
+}

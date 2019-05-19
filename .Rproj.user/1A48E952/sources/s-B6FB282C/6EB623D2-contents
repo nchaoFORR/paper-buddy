@@ -1,4 +1,0 @@
-library(tm)
-library(pdftools)
-
-test <- pdf_text('pdfs/0307015.pdf')

@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1558278158524.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "97CE501B",
+    "lastKnownWriteTime" : 1558281218,
+    "last_content_update" : 1558281218299,
+    "path" : "~/Documents/arxiv-finder/scripts/glove-embeddings.R",
+    "project_path" : "scripts/glove-embeddings.R",
+    "properties" : {
+        "cursorPosition" : "89,0",
+        "scrollLine" : "59",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
