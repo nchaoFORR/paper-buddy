@@ -29,3 +29,82 @@ Untracked files:
 
 nothing added to commit but untracked files present (use "git add" to track)
 ]0;/home/nick/Documents/arxiv-finder]0;nick@nick-B450-AORUS-PRO-WIFI: ~/Documents/arxiv-finder[01;32mnick@nick-B450-AORUS-PRO-WIFI[00m:[01;34m~/Documents/arxiv-finder[00m$ git add .
+]0;/home/nick/Documents/arxiv-finder]0;nick@nick-B450-AORUS-PRO-WIFI: ~/Documents/arxiv-finder[01;32mnick@nick-B450-AORUS-PRO-WIFI[00m:[01;34m~/Documents/arxiv-finder[00m$ git commit -m 'first commit'
+[master 866b94a] first commit
+ 19 files changed, 474 insertions(+)
+ create mode 100644 .Rproj.user/1A48E952/console06/F04886FB
+ create mode 100644 .Rproj.user/1A48E952/console06/F04886FB.env
+ create mode 100644 .Rproj.user/1A48E952/console06/INDEX001
+ create mode 100644 .Rproj.user/1A48E952/sources/prop/C63798E4
+ create mode 100644 .Rproj.user/1A48E952/sources/prop/EB60DF81
+ create mode 100644 .Rproj.user/1A48E952/sources/prop/INDEX
+ create mode 100644 .Rproj.user/1A48E952/sources/s-B6FB282C/2D6189F5-contents
+ create mode 100644 .Rproj.user/1A48E952/sources/s-B6FB282C/3CBC07ED
+ create mode 100644 .Rproj.user/1A48E952/sources/s-B6FB282C/3CBC07ED-contents
+ create mode 100644 .Rproj.user/1A48E952/sources/s-B6FB282C/44DA3F5E-contents
+ create mode 100644 .Rproj.user/1A48E952/sources/s-B6FB282C/5253B716-contents
+ create mode 100644 .Rproj.user/1A48E952/sources/s-B6FB282C/6EB623D2-contents
+ create mode 100644 .Rproj.user/1A48E952/sources/s-B6FB282C/lock_file
+ create mode 100644 .Rproj.user/shared/notebooks/patch-chunk-names
+ create mode 100644 .Rproj.user/shared/notebooks/paths
+ create mode 100644 arxiv-finder.Rproj
+ create mode 100644 data/algorithm_small.rds
+ create mode 100644 pdfs/0307015.pdf
+ create mode 100644 scripts/api_organizing.R
+]0;/home/nick/Documents/arxiv-finder]0;nick@nick-B450-AORUS-PRO-WIFI: ~/Documents/arxiv-finder[01;32mnick@nick-B450-AORUS-PRO-WIFI[00m:[01;34m~/Documents/arxiv-finder[00m$ git push
+fatal: No configured push destination.
+Either specify the URL from the command-line or configure a remote repository using
+
+    git remote add <name> <url>
+
+and then push using the remote name
+
+    git push <name>
+
+]0;/home/nick/Documents/arxiv-finder]0;nick@nick-B450-AORUS-PRO-WIFI: ~/Documents/arxiv-finder[01;32mnick@nick-B450-AORUS-PRO-WIFI[00m:[01;34m~/Documents/arxiv-finder[00m$ git push https://github.com/n chaoFORR/paper-buddy.git
+warning: push.default is unset; its implicit value has changed in
+Git 2.0 from 'matching' to 'simple'. To squelch this message
+and maintain the traditional behavior, use:
+
+  git config --global push.default matching
+
+To squelch this message and adopt the new behavior now, use:
+
+  git config --global push.default simple
+
+When push.default is set to 'matching', git will push local branches
+to the remote branches that already exist with the same name.
+
+Since Git 2.0, Git defaults to the more conservative 'simple'
+behavior, which only pushes the current branch to the corresponding
+remote branch that 'git pull' uses to update the current branch.
+
+See 'git help config' and search for 'push.default' for further information.
+(the 'simple' mode was introduced in Git 1.7.11. Use the similar mode
+'current' instead of 'simple' if you sometimes use older versions of Git)
+
+fatal: The current branch master has no upstream branch.
+To push the current branch and set the remote as upstream, use
+
+    git push --set-upstream https://github.com/nchaoFORR/paper-buddy.git master
+
+]0;/home/nick/Documents/arxiv-finder]0;nick@nick-B450-AORUS-PRO-WIFI: ~/Documents/arxiv-finder[01;32mnick@nick-B450-AORUS-PRO-WIFI[00m:[01;34m~/Documents/arxiv-finder[00m$ git push https://github.com/ncchaoFORR/paper-buddy.git[C[C[C[C[C[C[C[C[C[C[C master
+error: cannot run rpostback-askpass: No such file or directory
+Username for 'https://github.com': nchaoFORR
+error: cannot run rpostback-askpass: No such file or directory
+Password for 'https://nchaoFORR@github.com': 
+remote: Invalid username or password.
+fatal: Authentication failed for 'https://github.com/nchaoFORR/paper-buddy.git/'
+]0;/home/nick/Documents/arxiv-finder]0;nick@nick-B450-AORUS-PRO-WIFI: ~/Documents/arxiv-finder[01;32mnick@nick-B450-AORUS-PRO-WIFI[00m:[01;34m~/Documents/arxiv-finder[00m$ git push https://github.com/ncchaoFORR/paper-buddy.git master
+error: cannot run rpostback-askpass: No such file or directory
+Username for 'https://github.com': nchaoFORR
+error: cannot run rpostback-askpass: No such file or directory
+Password for 'https://nchaoFORR@github.com': 
+Counting objects: 28, done.
+Delta compression using up to 16 threads.
+Compressing objects:   4% (1/23)   Compressing objects:   8% (2/23)   Compressing objects:  13% (3/23)   Compressing objects:  17% (4/23)   Compressing objects:  21% (5/23)   Compressing objects:  26% (6/23)   Compressing objects:  30% (7/23)   Compressing objects:  34% (8/23)   Compressing objects:  39% (9/23)   Compressing objects:  43% (10/23)   Compressing objects:  47% (11/23)   Compressing objects:  52% (12/23)   Compressing objects:  56% (13/23)   Compressing objects:  60% (14/23)   Compressing objects:  65% (15/23)   Compressing objects:  69% (16/23)   Compressing objects:  73% (17/23)   Compressing objects:  78% (18/23)   Compressing objects:  82% (19/23)   Compressing objects:  86% (20/23)   Compressing objects:  91% (21/23)   Compressing objects:  95% (22/23)   Compressing objects: 100% (23/23)   Compressing objects: 100% (23/23), done.
+Writing objects:   3% (1/28)   Writing objects:   7% (2/28)   Writing objects:  10% (3/28)   Writing objects:  14% (4/28)   Writing objects:  17% (5/28)   Writing objects:  21% (6/28)   Writing objects:  25% (7/28)   Writing objects:  28% (8/28)   Writing objects:  32% (9/28)   Writing objects:  35% (10/28)   Writing objects:  39% (11/28)   Writing objects:  42% (12/28)   Writing objects:  46% (13/28)   Writing objects:  50% (14/28)   Writing objects:  53% (15/28)   Writing objects:  57% (16/28)   Writing objects:  60% (17/28)   Writing objects:  64% (18/28)   Writing objects:  67% (19/28)   Writing objects:  71% (20/28)   Writing objects:  75% (21/28)   Writing objects:  78% (22/28)   Writing objects:  82% (23/28)   Writing objects:  85% (24/28)   Writing objects:  85% (24/28), 1.05 MiB | 960.00 KiB/s   Writing objects:  85% (24/28), 1.48 MiB | 926.00 KiB/s   Writing objects:  85% (24/28), 1.92 MiB | 880.00 KiB/s   Writing objects:  85% (24/28), 2.73 MiB | 843.00 KiB/s   Writing objects:  85% (24/28), 3.48 MiB | 788.00 KiB/s   Writing objects:  85% (24/28), 4.36 MiB | 794.00 KiB/s   Writing objects:  85% (24/28), 5.11 MiB | 735.00 KiB/s   Writing objects:  89% (25/28), 5.48 MiB | 732.00 KiB/s   Writing objects:  92% (26/28), 5.48 MiB | 732.00 KiB/s   Writing objects:  92% (26/28), 6.23 MiB | 722.00 KiB/s   Writing objects:  96% (27/28), 6.23 MiB | 722.00 KiB/s   Writing objects: 100% (28/28), 6.23 MiB | 722.00 KiB/s   Writing objects: 100% (28/28), 6.29 MiB | 721.00 KiB/s, done.
+Total 28 (delta 0), reused 0 (delta 0)
+To https://github.com/nchaoFORR/paper-buddy.git
+   2450961..866b94a  master -> master
+]0;/home/nick/Documents/arxiv-finder]0;nick@nick-B450-AORUS-PRO-WIFI: ~/Documents/arxiv-finder[01;32mnick@nick-B450-AORUS-PRO-WIFI[00m:[01;34m~/Documents/arxiv-finder[00m$ git add .
