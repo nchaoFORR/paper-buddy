@@ -98,3 +98,102 @@ analogy_check <- function(word_main1, word_analog1, word_main2, dictionary, how_
     top_n(how_many)
   
 }
+
+
+### combine_doc_vectors
+
+# this function will take a set of document vectors and combine them into one
+
+# docs = character vector of doc id strings
+# dioctionary = embedding dictionary in tibble form
+
+combine_docs <- function(docs, dictionary) {
+  
+  dictionary %>% 
+    filter(article_id %in% docs) %>% 
+    select(-article_id) %>%
+    summarise_all(mean)
+  
+}
+
+### get_similar_docs()
+
+# This function will take in a document vector and return similar document vectors.
+
+# doc_vec = vector representation of a document
+# dictionary = document vector tibble for full vocab
+# meta = long metadata table
+# how_many = how many similar documents
+# docs_used = character vector of docs used if passing a doc combination
+
+get_similar_docs <- function(doc_vec, dictionary, meta, how_many = 5, docs_used = NULL) {
+  
+  
+  if(!is.null(doc_vec$article_id)) {
+    
+    art_id <- doc_vec$article_id
+    
+    doc_vec <- as.matrix(doc_vec %>% select(-article_id))
+    
+    dict_vec <- 
+      dictionary %>% 
+      select(-article_id) %>% 
+      as.matrix()
+    
+    text2vec::sim2(x = dict_vec,
+                   y = doc_vec,
+                   method = "cosine", norm = "l2") %>% 
+      as.data.frame() %>% 
+      rename(similarity = V1) %>% 
+      mutate(article_id = dictionary$article_id) %>% 
+      select(article_id, similarity) %>%  
+      filter(article_id != art_id) %>% 
+      arrange(desc(similarity)) %>% 
+      top_n(how_many) %>% 
+      left_join(meta %>%
+                  filter(var == "title") %>%
+                  distinct() %>% 
+                  select(-var) %>% 
+                  rename(title = val)) %>% 
+      left_join(meta %>%
+                  filter(var == 'summary') %>%
+                  distinct() %>% 
+                  select(-var) %>% 
+                  rename(abstract = val))
+
+    
+  } else {
+    
+    doc_vec <- as.matrix(doc_vec)
+    
+    dict_vec <- 
+      dictionary %>% 
+      filter(!article_id %in% docs_used) %>% 
+      select(-article_id) %>% 
+      as.matrix()
+    
+    text2vec::sim2(x = dict_vec,
+                   y = doc_vec,
+                   method = "cosine", norm = "l2") %>% 
+      as.data.frame() %>% 
+      rename(similarity = V1) %>% 
+      mutate(article_id = dictionary$article_id[!dictionary$article_id %in% docs_used]) %>% 
+      select(article_id, similarity) %>%  
+      filter(article_id != art_id) %>% 
+      arrange(desc(similarity)) %>% 
+      top_n(how_many) %>% 
+      left_join(meta %>%
+                  filter(var == "title") %>%
+                  distinct() %>% 
+                  select(-var) %>% 
+                  rename(title = val)) %>% 
+      left_join(meta %>%
+                  filter(var == 'summary') %>%
+                  distinct() %>% 
+                  select(-var) %>% 
+                  rename(abstract = val))
+    
+    
+  }
+  
+}

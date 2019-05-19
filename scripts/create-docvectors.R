@@ -57,3 +57,18 @@ fastext_doc_embedding <-
 write_rds(fastext_doc_embedding, 'data/fastextwiki_doc_embeddings.rds')
 
 ### Combined
+
+ensemble_embedding <- read_rds('data/ensemble-embedding.rds')
+
+ensemble_doc_embedding <- 
+  unigrams_tidy %>% 
+  count(article_id, word) %>% 
+  bind_tf_idf(word, article_id, n) %>% 
+  select(article_id, word, tf_idf) %>% 
+  left_join(ensemble_embedding) %>% 
+  drop_na() %>% 
+  group_by(article_id) %>% 
+  summarise_at(vars(V1:V26), ~{weighted.mean(., w = tf_idf)})
+
+
+write_rds(ensemble_doc_embedding, 'data/ensemble-doc-embedding.rds')
