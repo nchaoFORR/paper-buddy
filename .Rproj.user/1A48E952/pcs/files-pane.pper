@@ -1,5 +1,5 @@
 {
-    "path" : "~/Documents/arxiv-finder/data/word-embeddings",
+    "path" : "~/Documents/arxiv-finder/scripts",
     "sortOrder" : [
         {
             "ascending" : true,

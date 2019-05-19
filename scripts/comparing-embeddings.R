@@ -1,55 +1,66 @@
 library(tidyverse)
 library(tidytext)
+library(text2vec)
+library(plotly)
 
 source('scripts/text-functions.R')
 
 
 ### Compare pre-trained fastext, glove, and combination
 
-unigrams_tidy <-
-  read_rds('data/unigrams_small.rds') %>% 
-  group_by(word) %>% 
-  mutate(count = n()) %>% 
-  ungroup() %>% 
-  filter(count >= 5) %>% 
-  select(-count)
+fastext_docs <- read_rds('data/fastextwiki_doc_embeddings.rds')
+glove_docs <- read_rds('data/glove_doc_embeddings.rds')
 
-### Glove
+# read in document metadata
 
-glove_embedding <- read_rds('data/word-embeddings/custom-glove-embeddings.rds')
+doc_meta <- read_rds('data/algorithm_small.rds')
 
-glove_doc_embeddings <- 
-  unigrams_tidy %>% 
-  count(article_id, word) %>% 
-  bind_tf_idf(word, article_id, n) %>% 
-  select(article_id, word, tf_idf) %>% 
-  left_join(glove_embedding) %>%  
-  group_by(article_id) %>%
-  summarise_at(vars(glove_dim_1:glove_dim_50), ~{weighted.mean(., w = tf_idf)})
+### Quick tsne comp -- color by journal
 
-### FastText Wikipedia
+tsne_fastext <- Rtsne::Rtsne(fastext_docs %>% select(-article_id) %>% as.matrix,
+                             initial_dims = 300, verbose = TRUE, check_duplicates = FALSE)
+tsne_glove <- Rtsne::Rtsne(glove_docs %>% select(-article_id) %>% as.matrix,
+                             initial_dims = 300, verbose = TRUE, check_duplicates = FALSE)
 
-fastext_wiki_embedding <-
-  read_rds('data/word-embeddings/fastext-wiki-pretrained.rds') %>% 
-  separate(vec, c(paste0('ft_dim_', 1:300)), " ") %>% 
-  mutate_at(vars(ft_dim_1:ft_dim_300), as.numeric)
 
-# Check similar words to math-y words in fastext
-# fastext_wiki_mat <- as.matrix(fastext_wiki_embedding)
-# row.names(fastext_wiki_embedding) <- fastext_wiki_embedding[, 1] %>% pull()
-# fastext_wiki_mat <- fastext_wiki_mat[, 2:ncol(fastext_wiki_mat)]
-# 
-# most_similar("boston", fastext_wiki_mat)
+fastext_plot <- tibble(
+  article_id = fastext_docs$article_id
+) %>% 
+  bind_cols(tsne_fastext$Y %>% as.data.frame) %>% 
+  left_join(doc_meta %>%
+              filter(var == "title") %>%
+              distinct() %>% 
+              rename(title = val) %>% 
+              select(-var)) %>% 
+  inner_join(doc_meta %>%
+              filter(var == "journal_ref") %>%
+              distinct() %>% 
+              rename(journal = val) %>% 
+              select(-var)) %>% 
+  ggplot(aes(V1, V2, label = journal)) +
+  geom_point(size = 0.7, alpha = 0.7)
 
-fastext_doc_embedding <- 
-  unigrams_tidy %>% 
-  count(article_id, word) %>% 
-  bind_tf_idf(word, article_id, n) %>% 
-  select(article_id, word, tf_idf) %>% 
-  left_join(fastext_wiki_embedding) %>% 
-  drop_na() %>% 
-  group_by(article_id) %>%
-  summarise_at(vars(ft_dim_1:ft_dim_300), ~{weighted.mean(., w = tf_idf)})
+glove_plot <- tibble(
+  article_id = glove_docs$article_id
+) %>% 
+  bind_cols(tsne_glove$Y %>% as.data.frame) %>% 
+  left_join(doc_meta %>%
+              filter(var == "title") %>%
+              distinct() %>% 
+              rename(title = val) %>% 
+              select(-var)) %>% 
+  inner_join(doc_meta %>%
+               filter(var == "journal_ref") %>%
+               distinct() %>% 
+               rename(journal = val) %>% 
+               select(-var)) %>% 
+  ggplot(aes(V1, V2, label = journal)) +
+  geom_point(size = 0.7, alpha = 0.7)
 
-write_rds(fastext_doc_embedding, 'data/fastextwiki_doc_embeddings.rds')
+ggplotly(fastext_plot, tooltip = "label")
+ggplotly(glove_plot, tooltip = "label")
+
+### Custom embedding seems to do a better job of differetiating journals
+###   -- Will combining them improve ability to blend computation method distinction
+###      as well we industry.
 

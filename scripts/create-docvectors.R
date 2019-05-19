@@ -24,8 +24,11 @@ glove_doc_embeddings <-
   bind_tf_idf(word, article_id, n) %>% 
   select(article_id, word, tf_idf) %>% 
   left_join(glove_embedding) %>%  
+  drop_na() %>% 
   group_by(article_id) %>%
   summarise_at(vars(glove_dim_1:glove_dim_50), ~{weighted.mean(., w = tf_idf)})
+
+write_rds(glove_doc_embeddings, 'data/glove_doc_embeddings.rds')
 
 ### FastText Wikipedia
 
@@ -52,3 +55,5 @@ fastext_doc_embedding <-
   summarise_at(vars(ft_dim_1:ft_dim_300), ~{weighted.mean(., w = tf_idf)})
 
 write_rds(fastext_doc_embedding, 'data/fastextwiki_doc_embeddings.rds')
+
+### Combined
