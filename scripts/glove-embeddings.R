@@ -126,4 +126,4 @@ final_embedding <-
 names(final_embedding)[2:51] <- paste0('glove_dim_', 1:50)
 
 write_rds(final_embedding, 'data/word-embeddings/custom-glove-embeddings.rds')
-write_csv(final_embedding, 'data/word-embeddings/custom-glove-embeddings.rds')
+write_csv(final_embedding, 'data/word-embeddings/custom-glove-embeddings.csv')
