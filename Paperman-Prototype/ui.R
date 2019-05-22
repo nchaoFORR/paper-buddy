@@ -13,17 +13,35 @@ library(shiny)
 shinyUI(fluidPage(
   
   # Application title
-  titlePanel("Old Faithful Geyser Data"),
+  titlePanel("Paper Buddy"),
   
   # Sidebar with a slider input for number of bins 
   sidebarLayout(
     sidebarPanel(
-       sliderInput("bins",
-                   "Number of bins:",
-                   min = 1,
-                   max = 50,
-                   value = 30)
-    ),
+      
+      # Select the embedding
+      selectInput(inputId = "embedding_selector",
+                  label = "Select an embedding",
+                  choices = c("Custom", "PCA-Combined", "SVD-Combined"),
+                  selected = "PCA-Combined"),
+      
+      # Enter articles you've read
+      textInput("history1", "Enter an article Id:",
+                placeholder = "http://arxiv.org/abs/1711.06826v1"),
+      textInput("history2", "Enter an article Id:",
+                placeholder = 'http://arxiv.org/abs/1602.08644v3'),
+      textInput("history3", "Enter an article Id:",
+                placeholder = 'http://arxiv.org/abs/1708.08275v1'),
+      textInput("history4", "Enter an article Id:",
+                placeholder = 'http://arxiv.org/abs/1707.04860v1'),
+      textInput("history5", "Enter an article Id:",
+                placeholder = 'http://arxiv.org/abs/1212.4777v1'),
+      
+      # Find similar documents
+      actionButton(inputId = "go_button",
+                   "Find Me Papers!")
+      
+      ),
     
     # Show a plot of the generated distribution
     mainPanel(

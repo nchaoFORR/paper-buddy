@@ -9,18 +9,34 @@
 
 library(shiny)
 
+source('scripts/functions/text-functions.R')
+
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
    
-  output$distPlot <- renderPlot({
+  ### load embeddings into lists
+  embeddings <- list(
+    custom = list(
+      word = read_rds('data/word-embeddings/custom-glove-embeddings.rds'),
+      doc = read_rds('data/glove_doc_embeddings.rds')
+    ),
+    pca = list(
+      word = read_rds('data/word-embeddings/concat_pca_tibble.rds'),
+      doc = read_rds('data/pca-doc-embedding.rds')
+    ),
+    svd = list(
+      word = read_rds('data/word-embeddings/concat_svd_tibble.rds'),
+      doc = read_rds('data/svd-doc-embedding.rds')
+    )
+  )
+  
+  ### fire when go button pressed
+  observeEvent(input$go_button, {
     
-    # generate bins based on input$bins from ui.R
-    x    <- faithful[, 2] 
-    bins <- seq(min(x), max(x), length.out = input$bins + 1)
+    ### create docs into string
     
-    # draw the histogram with the specified number of bins
-    hist(x, breaks = bins, col = 'darkgray', border = 'white')
     
   })
+  
   
 })
