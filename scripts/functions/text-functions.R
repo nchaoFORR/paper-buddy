@@ -3,45 +3,90 @@
 ### most_similar()
 
 # this function will return the 10 most similar words.
-# word = character vector
+# word = character vector or a named/unamed word vector (expects tibble format
+#        if its a word vector)
 # dictionary = word embedding matrix
 # how_many = numeric
-most_similar <- function(token, dictionary, how_many = 10, named) {
+most_similar <- function(token, dictionary, how_many = 10) {
   
   library(tidyverse)
   
-  tryCatch({
+  message(token)
+  
+  dict_vec <- 
+    dictionary %>% 
+    select(-word) %>% 
+    as.matrix()
+  
+  
+  if(typeof(token) == "character") {
     
-    word_vec <-
-      dictionary %>% 
-      filter(word == token) %>% 
-      select(-word) %>% 
-      as.matrix()
+  
+      tryCatch({
+        
+        word_vec <-
+          dictionary %>% 
+          filter(word == token) %>% 
+          select(-word) %>% 
+          as.matrix()
+        
+        text2vec::sim2(x = dict_vec,
+                       y = word_vec,
+                       method = "cosine", norm = "l2") %>% 
+          as.data.frame() %>% 
+          rename(similarity = V1) %>% 
+          mutate(word = dictionary$word) %>% 
+          select(word, similarity) %>% 
+          filter(word != token) %>% 
+          arrange(desc(similarity)) %>% 
+          top_n(how_many)
+        
+        
+      },
+      error = function(e) {
+        
+        message('Word not found in dictionary!')
+        return()
+        
+      })
+  
+  } else {
     
-    dict_vec <- 
-      dictionary %>% 
-      select(-word) %>% 
-      as.matrix()
-    
-      text2vec::sim2(x = dict_vec,
-           y = word_vec,
-           method = "cosine", norm = "l2") %>% 
-      as.data.frame() %>% 
-      rename(similarity = V1) %>% 
-      mutate(word = dictionary$word) %>% 
-      select(word, similarity) %>% 
-      filter(word != token) %>% 
-      arrange(desc(similarity)) %>% 
-      top_n(how_many)
+    # check to see if its named or unamed
+    if(typeof(token[[1, 1]]) == "character") {
       
+      word_vec <- token[,2:ncol(token)] %>% as.matrix()
+      
+      text2vec::sim2(x = dict_vec,
+                     y = word_vec,
+                     method = "cosine", norm = "l2") %>% 
+        as.data.frame() %>% 
+        rename(similarity = V1) %>% 
+        mutate(word = dictionary$word) %>% 
+        select(word, similarity) %>% 
+        filter(word != token[[1, 1]]) %>% 
+        arrange(desc(similarity)) %>% 
+        top_n(how_many)
+      
+    } else {
+      
+      word_vec <- as.matrix(token)
+      
+      text2vec::sim2(x = dict_vec,
+                     y = word_vec,
+                     method = "cosine", norm = "l2") %>% 
+        as.data.frame() %>% 
+        rename(similarity = V1) %>% 
+        mutate(word = dictionary$word) %>% 
+        select(word, similarity) %>% 
+        arrange(desc(similarity)) %>% 
+        top_n(how_many)
+      
+    }
     
-  },
-  error = function(e) {
-    
-    message('Word not found in dictionary!')
-    return()
-    
-  })
+  }
+  
+
   
 }
 
@@ -179,7 +224,6 @@ get_similar_docs <- function(doc_vec, dictionary, meta, how_many = 5, docs_used 
       rename(similarity = V1) %>% 
       mutate(article_id = dictionary$article_id[!dictionary$article_id %in% docs_used]) %>% 
       select(article_id, similarity) %>%  
-      filter(article_id != art_id) %>% 
       arrange(desc(similarity)) %>% 
       top_n(how_many) %>% 
       left_join(meta %>%
@@ -197,3 +241,8 @@ get_similar_docs <- function(doc_vec, dictionary, meta, how_many = 5, docs_used 
   }
   
 }
+
+
+##### get_similar_words
+
+# Takes a named or unnamed 

@@ -1,5 +1,5 @@
 {
-    "path" : "~/Documents/arxiv-finder/scripts/dev",
+    "path" : "~/Documents/arxiv-finder/scripts/functions",
     "sortOrder" : [
         {
             "ascending" : true,

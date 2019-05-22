@@ -7,7 +7,7 @@ source('scripts/text-functions.R')
 ### Compare pre-trained fastext, glove, and combination
 
 unigrams_tidy <-
-  read_rds('data/unigrams_small.rds') %>% 
+  read_rds('data/unigrams_medium.rds') %>% 
   group_by(word) %>% 
   mutate(count = n()) %>% 
   ungroup() %>% 
@@ -58,17 +58,56 @@ write_rds(fastext_doc_embedding, 'data/fastextwiki_doc_embeddings.rds')
 
 ### Combined
 
-ensemble_embedding <- read_rds('data/ensemble-embedding.rds')
+# PCA
+pca_embedding <- read_rds('data/word-embeddings/concat_pca_tibble.rds')
 
-ensemble_doc_embedding <- 
+pca_doc_embedding <- 
   unigrams_tidy %>% 
   count(article_id, word) %>% 
   bind_tf_idf(word, article_id, n) %>% 
   select(article_id, word, tf_idf) %>% 
-  left_join(ensemble_embedding) %>% 
+  left_join(pca_embedding) %>% 
   drop_na() %>% 
   group_by(article_id) %>% 
-  summarise_at(vars(V1:V26), ~{weighted.mean(., w = tf_idf)})
+  summarise_at(vars(PC1:PC150), ~{weighted.mean(., w = tf_idf)})
 
 
-write_rds(ensemble_doc_embedding, 'data/ensemble-doc-embedding.rds')
+write_rds(pca_doc_embedding, 'data/pca-doc-embedding.rds')
+
+# SVD
+
+svd_embeddings <- read_rds('data/word-embeddings/concat_svd_tibble.rds')
+
+svd_doc_embedding <- 
+  unigrams_tidy %>% 
+  count(article_id, word) %>% 
+  bind_tf_idf(word, article_id, n) %>% 
+  select(article_id, word, tf_idf) %>% 
+  left_join(svd_embeddings) %>% 
+  drop_na() %>% 
+  group_by(article_id) %>% 
+  summarise_at(vars(V1:V150), ~{weighted.mean(., w = tf_idf)})
+
+
+write_rds(svd_doc_embedding, 'data/svd-doc-embedding.rds')
+
+
+# ConceptNet Numberbatch
+
+cnnb_embeddings_c <- read_rds('data/word-embeddings/cnnb_compact.rds')
+
+cnnb_doc_embedding <- 
+  unigrams_tidy %>% 
+  count(article_id, word) %>% 
+  bind_tf_idf(word, article_id, n) %>% 
+  select(article_id, word, tf_idf) %>% 
+  left_join(cnnb_embeddings_c) %>% 
+  separate(embedding, c(paste0('cnnb_dim_', 1:300)), " ") %>% 
+  mutate_at(vars(cnnb_dim_1:cnnb_dim_300), as.numeric) %>% 
+  drop_na() %>% 
+  group_by(article_id) %>% 
+  summarise_at(vars(V1:V150), ~{weighted.mean(., w = tf_idf)})
+
+
+write_rds(cnnb_doc_embedding, 'data/cnnb-doc-embedding.rds')
+

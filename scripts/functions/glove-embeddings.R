@@ -3,9 +3,11 @@ library(tidytext)
 library(text2vec)
 library(plotly)
 
+source('scripts/functions/text-functions.R')
+
 ### Create Glove embeddings
 
-unigrams <- read_rds('data/unigrams_small.rds')
+unigrams <- read_rds('data/unigrams_medium.rds')
 
 ### Initial clean (words are already lemma'd and stop words removed)
 
@@ -44,7 +46,7 @@ tcm <- create_tcm(it, vectorizer, skip_grams_window = 7)
 
 ## Fit Glove
 
-glove_fit <- GlobalVectors$new(word_vectors_size = 50, vocabulary = vocab_t2v,
+glove_fit <- GlobalVectors$new(word_vectors_size = 150, vocabulary = vocab_t2v,
                                x_max = 8, lambda = 1e-5)
 
 wv_main <- glove_fit$fit_transform(tcm, n_iter = 20, convergence_tol = 0.01)
@@ -92,16 +94,18 @@ most_similar('bayesian')
 most_similar('bayes')
 most_similar('poisson')
 
+most_similar('person')
+
 
 
 ## T-sne explore
 
-tsne_out <- Rtsne::Rtsne(word_vectors, initial_dims = 50, perplexity = 35,
+tsne_out <- Rtsne::Rtsne(word_vectors, initial_dims = 150, perplexity = 35,
                          verbose = TRUE)
 
 
 tsne_df <- tibble(
-  word = vocab
+  word = word_vectors %>% attr('dimnames') %>% .[[1]]
 ) %>% 
   bind_cols(tsne_out$Y %>% as.data.frame())
 
@@ -123,7 +127,7 @@ final_embedding <-
   as.data.frame() %>% 
   rownames_to_column('word')
 
-names(final_embedding)[2:51] <- paste0('glove_dim_', 1:50)
+names(final_embedding)[2:151] <- paste0('glove_dim_', 1:150)
 
 write_rds(final_embedding, 'data/word-embeddings/custom-glove-embeddings.rds')
 write_csv(final_embedding, 'data/word-embeddings/custom-glove-embeddings.csv')
