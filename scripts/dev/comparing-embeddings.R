@@ -19,6 +19,7 @@ files <- dir('data/arxiv')
 
 doc_meta <- map_dfr(paste0('data/arxiv/', files), read_rds) %>% distinct()
 
+# write_rds(doc_meta, 'Paperman-Prototype/data/doc_meta_medium.rds')
 
 # read in word embedding dictionaries
 glove_dict <- read_rds('data/word-embeddings/custom-glove-embeddings.rds')

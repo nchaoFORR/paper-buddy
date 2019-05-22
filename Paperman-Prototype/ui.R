@@ -26,16 +26,10 @@ shinyUI(fluidPage(
                   selected = "PCA-Combined"),
       
       # Enter articles you've read
-      textInput("history1", "Enter an article Id:",
-                placeholder = "http://arxiv.org/abs/1711.06826v1"),
-      textInput("history2", "Enter an article Id:",
-                placeholder = 'http://arxiv.org/abs/1602.08644v3'),
-      textInput("history3", "Enter an article Id:",
-                placeholder = 'http://arxiv.org/abs/1708.08275v1'),
-      textInput("history4", "Enter an article Id:",
-                placeholder = 'http://arxiv.org/abs/1707.04860v1'),
-      textInput("history5", "Enter an article Id:",
-                placeholder = 'http://arxiv.org/abs/1212.4777v1'),
+      selectizeInput(inputId = "history_selector",
+                     label = "Enter papers you've recently read",
+                     choices = NULL,
+                     multiple = TRUE),
       
       # Find similar documents
       actionButton(inputId = "go_button",
@@ -45,7 +39,10 @@ shinyUI(fluidPage(
     
     # Show a plot of the generated distribution
     mainPanel(
-       plotOutput("distPlot")
+       
+      # Main Results Table
+      uiOutput(outputId = "result_table")
+      
     )
   )
 ))
